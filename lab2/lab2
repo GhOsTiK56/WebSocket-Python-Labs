@@ -26,6 +26,9 @@ app = socketio.WSGIApp(sio)
 # Объект для учета количества запросов без обработчиков
 lost_queries = {"count": 0}
 
+# Словарь для хранения счетов пользователей
+user_scores = {}
+
 
 '''
 Обработчик события подключения, используем для чтобы поприветствовать клиента, обновить счетчик посетителей на сайте, 
@@ -62,12 +65,52 @@ def handle_get_users_online(sid, data):
 '''
 
 '''
-
 # Обработчик события count_queries
 @sio.on("count_queries")
 def handle_count_queries(sid, data):
     # Отправляем количество потерянных запросов
     sio.emit("queries", {"lost": lost_queries["count"]}, room=sid)
+
+
+'''
+
+'''
+
+# Обработчик события increase
+@sio.on("increase")
+def handle_increase(sid, data):
+    # Увеличиваем счет пользователя на 1
+    if sid in user_scores:
+        user_scores[sid] += 1
+    else:
+        user_scores[sid] = 1
+
+
+'''
+
+'''
+
+# Обработчик события decrease
+@sio.on("decrease")
+def handle_decrease(sid, data):
+    # Уменьшаем счет пользователя на 1
+    if sid in user_scores:
+        user_scores[sid] -= 1
+    else:
+        user_scores[sid] = -1
+
+
+'''
+
+'''
+
+# Обработчик события get_score
+@sio.on("get_score")
+def handle_get_score(sid, data):
+    # Отправляем счет пользователя
+    score = user_scores.get(sid, 0)
+    sio.emit("score", {"score": score}, room=sid)
+
 
 
 
@@ -101,15 +144,6 @@ def disconnect(sid):
     print(f"Клиент {sid} отключен")
     # Удаляем идентификатор отключившегося пользователя из списка
     connected_users.discard(sid)
-
-
-
-
-
-
-
-
-
 
 # Запускает eventlet WSGI сервер, слушая подключения на порту 80 и используя ранее созданное приложение app.
 eventlet.wsgi.server(eventlet.listen(('', 8000)), app)
