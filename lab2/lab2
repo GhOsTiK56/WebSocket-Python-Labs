@@ -37,18 +37,27 @@ user_scores = {}
 
 @sio.event # Декоратор
 def connect(sid, environ):
-    print(f"Клиент {sid} подключен")
+    print(sid, "connected")
+    
     # Добавляем идентификатор подключившегося пользователя в список
     connected_users.add(sid)
+    
+    # Отправляем список всех активных пользователей новому клиенту
+    sio.emit("message", {"online": len(connected_users)}, to=sid)
+    
+    # Отправляем обновленное количество пользователей всем подключенным клиентам
+    sio.emit("message", {"online": len(connected_users)}, skip_sid=sid)
 
 
 '''
 Обработчик события message, принимает и обрабатывает сообщения от клиента.
 '''
  
+# Обработчик события message
 @sio.on("message")
-def incoming_message(sid, data):
-    print("мне сказали", data, sid)
+def handle_message(sid, data):
+    # Отправляем сообщение всем подключенным пользователям, кроме отправителя
+    sio.emit("message", data, skip_sid=sid)
 
 
 '''
@@ -112,13 +121,6 @@ def handle_get_score(sid, data):
     sio.emit("score", {"score": score}, room=sid)
 
 
-
-
-
-
-
-
-
 '''
 Универсальный обработчик событий, обрабатывает все события, для которых нет специфических обработчиков.
 Увеличивает счетчик потерянных запросов и отправляет сообщение об ошибке клиенту.
@@ -145,6 +147,9 @@ def disconnect(sid):
     print(f"Клиент {sid} отключен")
     # Удаляем идентификатор отключившегося пользователя из списка
     connected_users.discard(sid)
+    
+    # Отправляем обновленное количество пользователей всем оставшимся подключенным клиентам
+    sio.emit("message", {"online": len(connected_users)})
 
 # Запускает eventlet WSGI сервер, слушая подключения на порту 80 и используя ранее созданное приложение app.
 eventlet.wsgi.server(eventlet.listen(('', 8000)), app)
