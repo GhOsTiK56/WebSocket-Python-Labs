@@ -1,3 +1,6 @@
+'''
+Тесты для проверки функциональности приложения "Игра в загадки".
+'''
 import time
 import requests
 
@@ -32,28 +35,35 @@ def test_logic_full(client, events, riddles):
     Тест проверяет всю логику игры
     (все вопросы, правильные и неверные ответы, подсчёт очков и окончание игры)
     """
+    # Подключаем клиента к серверу
     client.connect(URL)
     assert client.connected, "Клиент не смог подключиться к серверу"
 
     # Отвечаем верно на первые 4 вопроса из 5
     for i in range(1, 5):
+        # Запрашиваем следующую загадку
         client.emit('next', {})
         time.sleep(0.1)
 
+        # Получаем загадку от сервера
         response = events.get('riddle')
         assert response, "Не пришёл эвент 'riddle' после начала игры" if i == 1 \
             else "Не пришёл эвент 'riddle' после нажатия кнопки 'Следующий вопрос'"
         assert 'text' in response, "Не найден текст загадки в эвенте 'riddle'"
 
+        # Получаем правильный ответ на загадку
         answer = riddles(response['text'])
 
+        # Отправляем ответ на загадку
         client.emit('answer', {'text': answer})
         time.sleep(0.1)
 
+        # Проверяем, что пришло обновление счета
         score = events.get('score')
         assert score, "Не пришёл эвент 'score' после ответа на вопрос!"
         assert score['value'] == i, f"Количество очков должно быть {i}, получено значение {score['value']}!"
 
+        # Проверяем, что пришел результат ответа
         result = events.get('result')
         assert result, "Не пришёл эвент 'result' после ответа на вопрос!"
         assert result['is_correct'] == True, "Ответ на вопрос должен быть верным!"
@@ -77,12 +87,14 @@ def test_logic_full(client, events, riddles):
     if 'score' in events:
         del events['score']
 
+    # Запрашиваем следующую загадку, чтобы завершить игру
     client.emit('next', {})
     time.sleep(0.1)
 
     # Проверяем пришёл ли эвент 'over' после окончания игры
     assert 'over' in events, "Эвент 'over' не пришёл после окончания игры!"
 
+    # Проверяем, что пришло обновление счета после завершения игры
     score = events.get('score')
     assert score, "Не пришёл эвент 'score' после окончания игры!"
     # Проверяем что очки сбросились в 0 после окончания игры
