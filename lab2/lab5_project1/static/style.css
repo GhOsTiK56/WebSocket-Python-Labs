@@ -1,101 +1,106 @@
-/* RESETS */
+/*
+Файл стилей для приложения "Игра в загадки".
+Содержит стили для оформления элементов интерфейса игры.
+*/
+
+/* RESETS - Сброс стандартных стилей браузера */
 
 * {
-    box-sizing: border-box;
-    border: none;
-    background: none;
-    box-shadow: None;
-    font-size: 18px;
+    box-sizing: border-box;  /* Включаем padding и border в ширину и высоту элемента */
+    border: none;            /* Убираем границы */
+    background: none;        /* Убираем фон */
+    box-shadow: None;        /* Убираем тени */
+    font-size: 18px;         /* Устанавливаем размер шрифта по умолчанию */
 }
 
 
 body {
-    background-color: #111;
-    height: 1vh;
-    font-family: arial, sans-serif;
+    background-color: #111;      /* Темный фон для тела документа */
+    height: 1vh;                /* Высота тела документа */
+    font-family: arial, sans-serif;  /* Шрифт по умолчанию */
 }
 
-/* BOX MODEL UTILITS */
+/* BOX MODEL UTILITS - Утилиты для модели блока */
 
 .container {
-    max-width: 480px;
-    margin: 0.5rem auto;
+    max-width: 480px;      /* Максимальная ширина контейнера */
+    margin: 0.5rem auto;   /* Центрируем контейнер с отступами сверху и снизу */
 }
 
 .card {
-    background-color: #fff;
-    border-radius: .5rem;
-    border: 1px solid #ccc;
-    padding: 2rem;
-    color: #333;
-    min-height: .9vh;
-    position: relative;
+    background-color: #fff;     /* Белый фон карточки */
+    border-radius: .5rem;       /* Скругленные углы */
+    border: 1px solid #ccc;     /* Серая граница */
+    padding: 2rem;              /* Внутренние отступы */
+    color: #333;                /* Темный цвет текста */
+    min-height: .9vh;           /* Минимальная высота */
+    position: relative;         /* Относительное позиционирование */
 }
 
 .center {
-    text-align: center;
+    text-align: center;  /* Центрируем текст */
 }
 
 .block {
-    display: block;
-    width: 100%;
+    display: block;      /* Делаем элемент блочным */
+    width: 100%;         /* Занимаем всю ширину */
 }
 
 .mb {
-    margin-bottom: 2rem;
+    margin-bottom: 2rem;  /* Отступ снизу */
 }
 
-/* TYPOGRAPHY */
+/* TYPOGRAPHY - Стили для типографики */
 
 h1 {
-    font-size: 2rem;
+    font-size: 2rem;  /* Размер шрифта заголовка */
 }
 
-/* FORMS AND BUTTONS */
+/* FORMS AND BUTTONS - Стили для форм и кнопок */
 
 button {
-    overflow: visible;
-    background: transparent;
-    border: none;
-    background-color: #0076FE;
-    border-radius: .25em;
-    cursor: pointer;
-    color: #fff;
+    overflow: visible;         /* Показываем переполнение */
+    background: transparent;   /* Прозрачный фон */
+    border: none;              /* Убираем границу */
+    background-color: #0076FE; /* Синий фон кнопки */
+    border-radius: .25em;      /* Скругленные углы */
+    cursor: pointer;           /* Курсор в виде указателя */
+    color: #fff;               /* Белый цвет текста */
 }
 
 
 .tappable {
-    background-color: #0076FE;
-    color: #fff;
-    padding: 1em;
+    background-color: #0076FE;  /* Синий фон для "нажимаемого" элемента */
+    color: #fff;                /* Белый цвет текста */
+    padding: 1em;               /* Внутренние отступы */
 }
 
 .input-large {
-    font-size: 4rem;
-    text-align: center;
-    padding: .5rem;
+    font-size: 4rem;          /* Большой размер шрифта */
+    text-align: center;       /* Центрируем текст */
+    padding: .5rem;           /* Внутренние отступы */
 
-    background-color: #eee;
-    border-radius: 8px;
+    background-color: #eee;   /* Светло-серый фон */
+    border-radius: 8px;       /* Скругленные углы */
 }
 
-/* COMPONENTS */
+/* COMPONENTS - Стили для компонентов */
 
 
 .back-link {
-    position: absolute;
-    top: 1em;
-    left: 1em;
-    color: #666;
-    text-decoration: none;
+    position: absolute;    /* Абсолютное позиционирование */
+    top: 1em;             /* Отступ сверху */
+    left: 1em;            /* Отступ слева */
+    color: #666;          /* Темно-серый цвет */
+    text-decoration: none; /* Убираем подчеркивание */
 }
 
 .alert {
-    background-color: #F3F3F3;
-    padding: .75em .5em;
-    border-radius: 8px;
+    background-color: #F3F3F3;  /* Светло-серый фон для уведомлений */
+    padding: .75em .5em;        /* Внутренние отступы */
+    border-radius: 8px;         /* Скругленные углы */
 }
 
 .alert.info {
-    background-color: #EAF2FD;
+    background-color: #EAF2FD;  /* Голубой фон для информационных уведомлений */
 }
