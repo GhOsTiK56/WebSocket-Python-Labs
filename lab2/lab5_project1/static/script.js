@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Получен ответ с сервера
     app.on("result", "#showanswer", (data) => {
         console.log(data)
-        app.store.riddle = data
+        app.store.riddle = data.riddle
     })
 
     // Получен сигнал "обновлен счет" с сервера
