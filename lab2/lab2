@@ -43,18 +43,18 @@ def connect(sid, environ):
 
 
 '''
-
+Обработчик события message, принимает и обрабатывает сообщения от клиента.
 '''
-
+ 
 @sio.on("message")
 def incoming_message(sid, data):
     print("мне сказали", data, sid)
 
 
 '''
-
+Обработчик события get_users_online, возвращает количество пользователей онлайн.
 '''
-
+ 
 # Обработчик события get_users_online
 @sio.on("get_users_online")
 def handle_get_users_online(sid, data):
@@ -63,19 +63,19 @@ def handle_get_users_online(sid, data):
 
 
 '''
-
+Обработчик события count_queries, возвращает количество потерянных запросов.
 '''
+ 
 # Обработчик события count_queries
 @sio.on("count_queries")
 def handle_count_queries(sid, data):
     # Отправляем количество потерянных запросов
     sio.emit("queries", {"lost": lost_queries["count"]}, room=sid)
 
-
 '''
-
+Обработчик события increase, увеличивает счет пользователя на 1.
 '''
-
+ 
 # Обработчик события increase
 @sio.on("increase")
 def handle_increase(sid, data):
@@ -87,9 +87,9 @@ def handle_increase(sid, data):
 
 
 '''
-
+Обработчик события decrease, уменьшает счет пользователя на 1.
 '''
-
+ 
 # Обработчик события decrease
 @sio.on("decrease")
 def handle_decrease(sid, data):
@@ -101,9 +101,9 @@ def handle_decrease(sid, data):
 
 
 '''
-
+Обработчик события get_score, возвращает текущий счет пользователя.
 '''
-
+ 
 # Обработчик события get_score
 @sio.on("get_score")
 def handle_get_score(sid, data):
@@ -120,8 +120,10 @@ def handle_get_score(sid, data):
 
 
 '''
-
+Универсальный обработчик событий, обрабатывает все события, для которых нет специфических обработчиков.
+Увеличивает счетчик потерянных запросов и отправляет сообщение об ошибке клиенту.
 '''
+ 
 # Универсальный обработчик событий
 @sio.on('*')
 def catch_all(event, sid, data):
@@ -130,7 +132,6 @@ def catch_all(event, sid, data):
     # Отправляем сообщение об ошибке только если событие не является системным
     if event not in ["connect", "disconnect"]:
         sio.emit("error", {"message": f"No handler for event {event}"}, room=sid)
-
 
 '''
 Для обработки отключения мы используем декоратор sio.event и функцию disconnect.
