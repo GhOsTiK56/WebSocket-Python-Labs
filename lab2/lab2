@@ -18,7 +18,7 @@ import socketio
 sio = socketio.Server(cors_allowed_origins='*')
 
 # Список для хранения идентификаторов подключенных пользователей
-connected_users = set()
+connected_users = []
 
 # Создает WSGI (Web Server Gateway Interface) приложение и связывает его с экземпляром сервера Socket.IO.
 app = socketio.WSGIApp(sio)
@@ -40,7 +40,11 @@ def connect(sid, environ):
     print(sid, "connected")
     
     # Добавляем идентификатор подключившегося пользователя в список
-    connected_users.add(sid)
+    connected_users.append(sid)
+    
+    # Выводим сообщение о подключении и содержание списка
+    print("Клиент подключился!")
+    print(connected_users)
     
     # Отправляем список всех активных пользователей новому клиенту
     sio.emit("message", {"online": len(connected_users)}, to=sid)
@@ -144,9 +148,12 @@ def catch_all(event, sid, data):
 # Обработчик события отключения
 @sio.event # Декоратор
 def disconnect(sid):
-    print(f"Клиент {sid} отключен")
     # Удаляем идентификатор отключившегося пользователя из списка
-    connected_users.discard(sid)
+    connected_users.remove(sid)
+    
+    # Выводим сообщение об отключении и содержание списка
+    print("Клиент отключился")
+    print(connected_users)
     
     # Отправляем обновленное количество пользователей всем оставшимся подключенным клиентам
     sio.emit("message", {"online": len(connected_users)})
