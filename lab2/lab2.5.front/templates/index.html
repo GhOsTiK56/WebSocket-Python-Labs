@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Socket.IO Test</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+<h2>Список пользователей</h2>
+<div id="users"></div>
+
+<h2>Сообщения</h2>
+<div id="messages"></div>
+
+<h2>Отправить сообщение</h2>
+<input type="text" id="messageInput" placeholder="Введите сообщение">
+<button onclick="sendMessage()">Отправить</button>
+
+<script>
+const socket = io("http://localhost:8000");
+
+// Список пользователей
+function updateUsers() {
+    fetch("http://localhost:8000/")
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("users").innerHTML = JSON.stringify(data);
+        });
+}
+updateUsers();
+setInterval(updateUsers, 5000);
+
+// Обработка сообщений
+socket.on("message", data => {
+    const div = document.getElementById("messages");
+    div.innerHTML += "<p>" + data.text + "</p>";
+});
+
+// Подключение
+socket.on("connect", () => console.log("Подключен:", socket.id));
+socket.on("disconnect", () => console.log("Отключен"));
+
+// Отправка сообщений через POST
+function sendMessage() {
+    const msg = document.getElementById("messageInput").value;
+    if (!msg) return;
+    fetch("http://localhost:8000/broadcast", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: msg})
+    }).then(() => document.getElementById("messageInput").value = "");
+}
+</script>
+</body>
+</html>
